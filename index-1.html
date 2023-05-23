@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Vue basics</title>
+</head>
+<body>
+    <navbar
+    :pages="pages"
+    :active-page="activePage"
+    :nav-link-click="(index) => activePage=index"
+    >
+
+    </navbar>
+      <page-viewer 
+        :page="pages[activePage]">
+    </page-viewer>
+    <script>
+        let app = Vue.createApp({
+            computed: {
+            },
+            data() {
+                return {
+                    activePage: 0,
+                    theme: "dark",
+                    pages: [
+                        {
+                            link: {text: 'Home', url: 'home.html'},
+                            pageTitle: 'Home Page',
+                            content: 'This is home page'
+                        },
+                        {
+                            link: {text: 'About', url: 'about.html'},
+                            pageTitle: 'About Page',
+                            content: 'This is About page'
+                        },
+                        {
+                            link: {text: 'Contact', url: 'contact.html'},
+                            pageTitle: 'Contact Page',
+                            content: 'This is Contact page'
+                        }
+                    ]
+                };
+            }
+        })
+
+        // page viewer component
+        app.component('page-viewer', {
+            props: ['page'],
+            template: `
+            <div class="container" id="container">
+                <h1>{{page.pageTitle}}</h1>
+                <p>{{page.content}}</p>
+            </div>
+            `
+        });
+
+        app.component('navbar', {
+            props: ['pages', 'activePage', 'navLinkClick'],
+            template: `
+            <nav
+        :class='[ \`bg-\${theme}\`, \`navbar-\${theme}\`, "navbar", "navbar-expand-lg"]'
+    >
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Vue</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li v-for="(page, index) in pages" 
+                class="nav-item"  :key="index">
+                    <a 
+                        class="nav-link" 
+                        :class="{active : activePage == index}"
+                        :href="page.link.url"
+                        :title="\`An example is \${page.link.text}\`"
+                        @click.prevent="navLinkClick(index)"
+                    >{{page.link.text}}</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <button 
+                    class="btn btn-primary"
+                    @click.prevent="changeTheme()"
+                >Toggle nav {{theme}}
+                </button>
+            </form>
+        </div>
+      </nav>
+            `,
+            data() {
+                return {
+                    theme: 'light',
+                }
+            },
+            methods: {
+                changeTheme() {
+                    let theme = "light";
+                    if (this.theme == 'light') {
+                        theme = 'dark'
+                    }
+                    this.theme = theme;
+                }
+            }
+        })
+        app.mount('body')
+    </script>
+</body>
+</html>
