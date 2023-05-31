@@ -5,15 +5,14 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Vue</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(page, index) in pages" 
+                <li v-for="(page, index) in publishedPages" 
                 class="nav-item"  :key="index">
-                    <a 
-                        class="nav-link" 
-                        :class="{active : activePage == index}"
-                        :href="page.link.url"
-                        :title="`An example is ${page.link.text}`"
+                    <navbar-link
+                        :page="page"
+                        :isActive='activePage === index'
                         @click.prevent="navLinkClick(index)"
-                    >{{page.link.text}}</a>
+                        >
+                    </navbar-link>
                 </li>
             </ul>
             <form class="d-flex">
@@ -28,7 +27,20 @@
 </template>
 
 <script>
+import NavbarLink from './NavbarLink.vue';
+
 export default {
+    components: {
+        NavbarLink
+    },
+    created() {
+        this.getThemeSetting();
+    },
+    computed: {
+        publishedPages() {
+            return this.pages.filter(p => p.published);
+        }
+    },
     props: ['pages', 'activePage', 'navLinkClick'],
             data() {
                 return {
@@ -42,6 +54,16 @@ export default {
                         theme = 'dark'
                     }
                     this.theme = theme;
+                    this.storeThemeSettings();
+                },
+                storeThemeSettings() {
+                    localStorage.setItem('theme', this.theme);
+                },
+                getThemeSetting() {
+                    let theme = localStorage.getItem("theme");
+                    if(theme) {
+                        this.theme = theme;
+                    }
                 }
             }
 }
