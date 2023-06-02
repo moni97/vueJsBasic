@@ -57,7 +57,21 @@
 </template>
 <script>
 export default {
-    props: ['pageCreated'],
+    //emits: ['pageCreated'],
+    emits: {
+        pageCreated({pageTitle, content, link, published}){
+            if(!pageTitle) {
+                return false;
+            }
+            if(!content) {
+                return false;
+            }
+            if(!link || !link.test || !link.url) {
+                return false;
+            }
+            return true;
+        }
+    },
     computed: {
         isFormInvalid() {
             return !this.pageTitle || !this.content || !this.linkText || !this.linkURL;
@@ -79,7 +93,7 @@ export default {
                 return;
             }
 
-            this.pageCreated({
+            this.$emit('pageCreated', {
                 pageTitle: this.pageTitle,
                 content: this.content,
                 link: {
@@ -87,7 +101,7 @@ export default {
                     url: this.linkURL
                 },
                 published: this.published 
-            })
+            });
 
             this.pageTitle= '',
             this.content = '',

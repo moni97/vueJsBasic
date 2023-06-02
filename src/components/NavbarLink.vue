@@ -1,28 +1,17 @@
 <template>
-    <a 
-    class="nav-link" 
-    :class="{active : activePage == index}"
-    :href="page.link.url"
-    :title="`An example is ${page.link.text}`"
->{{page.link.text}}</a>
+    <li>
+        <router-link
+        :to="`/${index}`"
+        class="nav-link" 
+        active-class="active"
+        :title="`An example is ${page.link.text}`"
+        >{{page.link.text}}
+        </router-link>
+    </li>
 </template>
 
 <script>
 export default {
-    props: ['page', 'isActive'],
-    computed: {
-        activeClasses() {
-            return {
-                active: this.isActive,
-                emphasize: this.isActive
-            }
-        }
-    }
+    props: ['page', 'index']
 } 
 </script>
-
-<style scoped>
-.emphasize {
-    text-decoration: underline !important;
-}
-</style>
